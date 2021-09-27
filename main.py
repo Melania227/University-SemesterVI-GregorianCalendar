@@ -3,6 +3,7 @@ fecha_max = [9999, 12, 31]
 fecha_min = [1582, 10, 15]
 dias_mes = [31, [28, 29], 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 fecha_actual = (2021,9,27)
+dia = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']
 
 # --------------------------------------- fecha_es_tupla ----------------------------------------------
 
@@ -17,16 +18,16 @@ def fecha_es_tupla(fecha):
                 if orden_de_fecha(fecha):
                     return True
                 else:
-                    print("fecha desordenada")
+                    generar_error('fecha_desordenada')
                     return False
             else:
-                print("no todo es entero positivo")
+                generar_error('entero_positivo')
                 return False
         else:
-            print("no es tamanho 3")
+            generar_error('tamano_tupla')
             return False
     else:
-        print("no es tuple")
+        generar_error('no_es_tupla')
         return False
 
 
@@ -34,7 +35,7 @@ def fecha_es_tupla(fecha):
 #Salidas: boolean
 #Descripción: Función que valida un dato es de tipo entero y además si es un número positivo
 def es_entero_positivo(dato):
-    return (type(dato) == int and dato>0)
+    return (type(dato) == int and dato>=0)
 
 
 #Entradas: tupla
@@ -115,16 +116,16 @@ def fecha_es_valida(fecha):
                 if dia>=1 and dia <= dias_del_mes:
                     return True
                 else:
-                    print("dias no dentro de rango")
+                    generar_error('rango_dia')
                     return False
             else:
-                print("mes no dentro de rango")
+                generar_error('rango_mes')
                 return False
         else:
-            print("anno no dentro de rango")
+            generar_error('rango_anno')
             return False
     else:
-        print("no es tupla valida")
+        generar_error('tupla_invalida')
         return False
 
 
@@ -142,7 +143,6 @@ def dias_desde_primero_enero(fecha):
         dia = fecha[2]
         es_bisiesto = 1 if bisiesto(anno) else 0
         if mes==1:
-            print("mes de enero, 0 dias transcurridos")
             return 0
         elif anno <= fecha_actual[0] and mes <= fecha_actual[1] and dia <= fecha_actual[2]:
             res = 0
@@ -157,11 +157,11 @@ def dias_desde_primero_enero(fecha):
                     res+=d
             return res
         else:
-            print("fecha mayor a la actual")
+            generar_error('fecha_posterior')
             return 0
     else:
-        print("fecha invalida")
-        return False
+        generar_error('fecha_invalida')
+        return 0
 
 
 
@@ -170,14 +170,30 @@ def dias_desde_primero_enero(fecha):
 #Salidas: void / Impresión del error
 #Descripción: Función específica para generar errores (consideraciones de diseño tomadas)
 def generar_error(tipo):
-    if tipo == 'es_tupla':
+    if tipo == 'no_es_tupla':
         print('ERROR: La fecha ingresada debe estar en formato de tupla')
+    elif tipo == 'tamano_tupla':
+        print('ERROR: La tupla debe estar compuesta por 3 números enteros positivos')
     elif tipo == 'entero_positivo':
         print('ERROR: La tupla debe estar compuesta por números enteros positivos')
+    elif tipo == 'fecha_desordenada':
+        print('ERROR: La fecha debe venir en el orden año, mes, día')
+    elif tipo == 'tupla_invalida':
+        print('ERROR: El formato de la tupla ingresada es inválido')
     elif tipo == 'formato_anno':
         print('ERROR: El año debe estar compuesto por 4 dígitos')
-    elif tipo == 'entero_mes_dia':
+    elif tipo == 'formato_mes_dia':
         print('ERROR: El mes y el día deben estar compuestos por 1 o 2 dígitos')
+    elif tipo == 'rango_anno':
+        print('ERROR: El año no se encuentra dentro del rango válido por el calendario gregoriano')
+    elif tipo == 'rango_mes':
+        print('ERROR: El mes no se encuentra dentro del rango válido por el calendario gregoriano')
+    elif tipo == 'rango_dia':
+        print('ERROR: El día no se encuentra dentro del rango válido por el calendario gregoriano')
+    elif tipo == 'fecha_invalida':
+        print('ERROR: La fecha ingresada es inválida')
+    elif tipo == 'fecha_posterior':
+        print('ERROR: La fecha ingresada es posterior a la fecha actual')
 
 
-print(dias_desde_primero_enero((2021,9,27)))
+print(fecha_es_tupla(3))
