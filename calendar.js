@@ -1,7 +1,9 @@
+const { CodeNode } = require("source-list-map");
+
 const fecha_max = [9999, 12, 31];
 const fecha_min = [1582, 10, 15];
 const dias_mes = [31, [28, 29], 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-const dia = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']
+const nombre_dia = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']
 
 function validar_numero(num) {
     if (typeof (num) == 'number')
@@ -68,6 +70,9 @@ function generar_error(tipo) {
     }
 }
 
-function dia_primero_enero(num){
-
+function dia_primero_enero(anno){
+    let codigo = ((anno-1)%7+((anno-1)/4-(3*((anno-1)/100+1)/anno))%7+0+1%7)%7;
+    return nombre_dia[codigo];
 }
+
+dia_primero_enero([2001,4,4])
