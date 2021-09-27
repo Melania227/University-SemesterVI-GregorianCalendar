@@ -129,6 +129,42 @@ def fecha_es_valida(fecha):
 
 
 
+# ----------------------------------- dias_desde_primero_enero ------------------------------------------
+
+#Entradas: fecha en formato de tupla
+#Salidas: número entero positivo
+#Descripción: Función que dada una fecha válida deberá determinar el número entero de días transcurridos
+#             desde el primero de enero del año ingresado hasta el día de la fecha dada.
+def dias_desde_primero_enero(fecha):
+    if fecha_es_valida(fecha):
+        anno = fecha[0]
+        mes = fecha[1]-1
+        dia = fecha[2]
+        es_bisiesto = 1 if bisiesto(anno) else 0
+        if mes==1:
+            print("mes de enero, 0 dias transcurridos")
+            return 0
+        elif anno <= fecha_actual[0] and mes <= fecha_actual[1] and dia <= fecha_actual[2]:
+            res = 0
+            for i in range(0,len(dias_mes)):
+                d=dias_mes[i]
+                if type(dias_mes[i]) != int:
+                    d = dias_mes[i][es_bisiesto]
+                if i==mes:
+                    res+=dia-1
+                    return res
+                else:
+                    res+=d
+            return res
+        else:
+            print("fecha mayor a la actual")
+            return 0
+    else:
+        print("fecha invalida")
+        return False
+
+
+
 
 #Entradas: string (representa el tipo de error por imprimir)
 #Salidas: void / Impresión del error
