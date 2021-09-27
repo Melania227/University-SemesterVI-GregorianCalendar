@@ -1,3 +1,10 @@
+# ------------------------------------- Variable Globales ---------------------------------------------
+fecha_max = [9999, 12, 31]
+fecha_min = [1582, 10, 15]
+dias_mes = [31, [28, 29], 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+fecha_actual = (2021,9,27)
+
+# --------------------------------------- fecha_es_tupla ----------------------------------------------
 
 #Entradas: string (representa el tipo de error por imprimir)
 #Salidas: void / Impresión del error
@@ -21,6 +28,7 @@ def fecha_es_tupla(fecha):
     else:
         print("no es tuple")
         return False
+
 
 #Entradas: cualquier tipo posible
 #Salidas: boolean
@@ -61,6 +69,67 @@ def formato_dia_mes(dia_mes):
         contador += 1
     return contador==2 or contador==1
 
+
+
+# ------------------------------------------ bisiesto ---------------------------------------------------
+
+#Entradas: número entero entre 1582 y 9999
+#Salidas: boolean
+#Descripción: Ingresado un número, revisa que esté en el rango y retorna true en caso de ser bisiesto, 
+#             en caso contrario retorna false
+def bisiesto(anno):
+    if (es_entero_positivo(anno)):
+        if anno_en_rango(anno):
+            if (anno % 4 == 0):
+                if (anno % 100):
+                    return (anno % 400)
+                return True
+            return False
+        return False
+    return False
+
+
+#Entradas: número entero positivo
+#Salidas: boolean
+#Descripción: Función que valida si un año se encuentra dentro del rango válifo según el calendario 
+#             gregoriano
+def anno_en_rango(anno):
+    return fecha_min[0] <= anno and fecha_max[0] >= anno
+
+
+
+# --------------------------------------- fecha_es_valida -----------------------------------------------
+
+#Entradas: fecha en formato de tupla
+#Salidas: boolean
+#Descripción: Función que valida si la fecha ingresada es válida según el calendario gregoriano
+def fecha_es_valida(fecha):
+    if fecha_es_tupla(fecha):
+        anno = fecha[0]
+        mes = fecha[1]-1
+        dia = fecha[2]
+        if anno_en_rango(anno):
+            es_bisiesto = 1 if bisiesto(anno) else 0
+            if mes >=0 and mes <= 11:
+                dias_del_mes = dias_mes[mes][es_bisiesto] if mes==1 else dias_mes[mes]
+                if dia>=1 and dia <= dias_del_mes:
+                    return True
+                else:
+                    print("dias no dentro de rango")
+                    return False
+            else:
+                print("mes no dentro de rango")
+                return False
+        else:
+            print("anno no dentro de rango")
+            return False
+    else:
+        print("no es tupla valida")
+        return False
+
+
+
+
 #Entradas: string (representa el tipo de error por imprimir)
 #Salidas: void / Impresión del error
 #Descripción: Función específica para generar errores (consideraciones de diseño tomadas)
@@ -75,4 +144,4 @@ def generar_error(tipo):
         print('ERROR: El mes y el día deben estar compuestos por 1 o 2 dígitos')
 
 
-print(fecha_es_tupla((2001,2,27)))
+print(dias_desde_primero_enero((2021,9,27)))
