@@ -78,16 +78,16 @@ def formato_dia_mes(dia_mes):
 #Salidas: boolean
 #Descripción: Ingresado un número, revisa que esté en el rango y retorna true en caso de ser bisiesto, 
 #             en caso contrario retorna false
-def bisiesto(anno):
-    if (es_entero_positivo(anno)):
-        if anno_en_rango(anno):
-            if (anno % 4 == 0):
-                if (anno % 100):
-                    return (anno % 400)
+def bisiesto(num):
+    if (es_entero_positivo(num)):
+        if (anno_en_rango(num)):
+            if (num % 4 == 0):
+                if (num % 100):
+                    return (num % 400)
                 return True
             return False
-        return False
-    return False
+        return generar_error('rango_anno')
+    return generar_error('año_entero_positivo')
 
 
 #Entradas: número entero positivo
@@ -132,6 +132,30 @@ def fecha_es_valida(fecha):
 
 # ----------------------------------- dias_desde_primero_enero ------------------------------------------
 
+#Entradas: Una tupla que representa una fecha
+#Salidas: Una tupla que representa una fecha
+#Descripcion: Ingresado una fecha, retorna la sigueinte fecha válida.
+def dia_siguiente(fecha):
+    dia = fecha[2]
+    mes = fecha[1]
+    anno = fecha[0]
+    es_bisiesto = 1 if bisiesto(anno) else 0
+    if (fecha_es_valida):
+        if (mes == 2):
+            [anno, mes, dia + 1] if dia < dias_mes[1][es_bisiesto] else [anno, mes + 1, 1]
+        elif (dia < dias_mes[mes - 1]):
+            return [anno, mes, dia + 1]
+        elif (dia == dias_mes[mes - 1]):
+            if (mes == 12):
+                return [anno + 1, 1, 1]
+            else:
+                return [anno, mes + 1, 1]
+    return False
+        
+
+
+# ----------------------------------- dias_desde_primero_enero ------------------------------------------
+
 #Entradas: fecha en formato de tupla
 #Salidas: número entero positivo
 #Descripción: Función que dada una fecha válida deberá determinar el número entero de días transcurridos
@@ -165,10 +189,27 @@ def dias_desde_primero_enero(fecha):
 
 
 
+# ----------------------------------- dias_desde_primero_enero ------------------------------------------
+
+#Entradas: Un numero entero entre 1582 y 9999
+#Salidas: Un numero entero
+#Descripción: Ingresado un número, el sistema determinará y retornará en formato codificado un número 
+#             entero conforme al día de la semana que corresponde al primero de enero del año ingresado. 
+def dia_primero_enero(anno):
+    if (es_entero_positivo(anno)):
+        if (anno_en_rango(anno)):
+            codigo = ((anno - 1) % 7 + ((anno - 1) / 4 - (3 * ((anno - 1) / 100 + 1) / anno)) % 7 + 0 + 1 % 7) % 7;
+            return codigo
+        return generar_error('rango_anno')
+    return generar_error('año_entero_positivo')
+
+
+
+# ------------------------------------- impresión de errores --------------------------------------------
 
 #Entradas: string (representa el tipo de error por imprimir)
 #Salidas: void / Impresión del error
-#Descripción: Función específica para generar errores (consideraciones de diseño tomadas)
+#Descripción: Función específica para generar errores (consideraciones de diseño tomadas).
 def generar_error(tipo):
     if tipo == 'no_es_tupla':
         print('ERROR: La fecha ingresada debe estar en formato de tupla')
@@ -194,6 +235,8 @@ def generar_error(tipo):
         print('ERROR: La fecha ingresada es inválida')
     elif tipo == 'fecha_posterior':
         print('ERROR: La fecha ingresada es posterior a la fecha actual')
+    elif tipo ==  'año_entero_positivo':
+        print('ERROR: El año debe ser un número entero positivo')
 
 
-print(fecha_es_tupla(3))
+print(fecha_es_tupla((2021,1,31)))
