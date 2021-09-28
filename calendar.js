@@ -1,5 +1,3 @@
-const { CodeNode } = require("source-list-map");
-
 const fecha_max = [9999, 12, 31];
 const fecha_min = [1582, 10, 15];
 const dias_mes = [31, [28, 29], 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -70,9 +68,17 @@ function generar_error(tipo) {
     }
 }
 
-function dia_primero_enero(anno){
-    let codigo = ((anno-1)%7+((anno-1)/4-(3*((anno-1)/100+1)/anno))%7+0+1%7)%7;
-    return nombre_dia[codigo];
+//E: Un numero entero entre 1582 y 9999
+//S: Un numero
+//D: Ingresado un número, el sistema determinará y retornará en formato codificado un número entero conforme al día de la semana que corresponde al primero de enero del año ingresado. 
+function dia_primero_enero(anno) {
+    if (validar_numero(num)) {
+        if (anno_en_rango(num)) {
+            let codigo = ((anno - 1) % 7 + ((anno - 1) / 4 - (3 * ((anno - 1) / 100 + 1) / anno)) % 7 + 0 + 1 % 7) % 7;
+            return codigo;
+        }
+        return generar_error('año_rango');
+    }
+    return generar_error('año_entero_positivo');
 }
 
-dia_primero_enero([2001,4,4])
