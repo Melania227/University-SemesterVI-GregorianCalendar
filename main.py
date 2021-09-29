@@ -168,7 +168,7 @@ def dias_desde_primero_enero(fecha):
         es_bisiesto = 1 if bisiesto(anno) else 0
         if mes==1:
             return 0
-        elif anno <= fecha_actual[0] and mes <= fecha_actual[1] and dia <= fecha_actual[2]:
+        else:
             res = 0
             for i in range(0,len(dias_mes)):
                 d=dias_mes[i]
@@ -180,9 +180,6 @@ def dias_desde_primero_enero(fecha):
                 else:
                     res+=d
             return res
-        else:
-            generar_error('fecha_posterior')
-            return 0
     else:
         generar_error('fecha_invalida')
         return 0
@@ -233,10 +230,8 @@ def generar_error(tipo):
         print('ERROR: El día no se encuentra dentro del rango válido por el calendario gregoriano')
     elif tipo == 'fecha_invalida':
         print('ERROR: La fecha ingresada es inválida')
-    elif tipo == 'fecha_posterior':
-        print('ERROR: La fecha ingresada es posterior a la fecha actual')
     elif tipo ==  'año_entero_positivo':
         print('ERROR: El año debe ser un número entero positivo')
 
 
-print(fecha_es_tupla((2021,1,31)))
+print(dias_desde_primero_enero((2021,10,31)))
