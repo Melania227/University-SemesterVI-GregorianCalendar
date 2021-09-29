@@ -82,12 +82,17 @@ def bisiesto(num):
     if (es_entero_positivo(num)):
         if (anno_en_rango(num)):
             if (num % 4 == 0):
-                if (num % 100):
-                    return (num % 400)
+                if (num % 100 ==0):
+                    if (num % 400):
+                        return True
+                    return False
                 return True
             return False
-        return generar_error('rango_anno')
-    return generar_error('año_entero_positivo')
+        generar_error('rango_anno')
+        return False
+    generar_error('año_entero_positivo')
+    return False
+
 
 
 #Entradas: número entero positivo
@@ -109,25 +114,39 @@ def fecha_es_valida(fecha):
         anno = fecha[0]
         mes = fecha[1]-1
         dia = fecha[2]
-        if anno_en_rango(anno):
-            es_bisiesto = 1 if bisiesto(anno) else 0
-            if mes >=0 and mes <= 11:
-                dias_del_mes = dias_mes[mes][es_bisiesto] if mes==1 else dias_mes[mes]
-                if dia>=1 and dia <= dias_del_mes:
+        
+        es_bisiesto = 1 if bisiesto(anno) else 0
+        if mes >=0 and mes <= 11:
+            dias_del_mes = dias_mes[mes][es_bisiesto] if mes==1 else dias_mes[mes]
+            if dia>=1 and dia <= dias_del_mes:
+                if fecha_en_rango(fecha): 
                     return True
                 else:
-                    generar_error('rango_dia')
+                    generar_error('rango_fecha')
                     return False
             else:
-                generar_error('rango_mes')
+                generar_error('rango_dia')
                 return False
         else:
-            generar_error('rango_anno')
+            generar_error('rango_mes')
             return False
     else:
-        generar_error('tupla_invalida')
         return False
 
+
+#Entradas: fecha en formato de tupla
+#Salidas: boolean
+#Descripción: Función que valida si la fecha ingresada se encuentra dentro de los rangos del calendario gregoriano
+def fecha_en_rango(fecha):
+    anno = fecha[0]
+    mes = fecha[1]
+    dia = fecha[2]
+    if anno == fecha_min[0] and mes == fecha_min[1] and dia == fecha_min[2]:
+        return False
+    elif anno == fecha_min[0] and mes <= fecha_min[1]:
+        return False
+    elif anno >= fecha_min[0] and anno <= fecha_max[0]:
+        return True
 
 
 # ----------------------------------- dias_desde_primero_enero ------------------------------------------
@@ -240,6 +259,8 @@ def generar_error(tipo):
         print('ERROR: La fecha ingresada es inválida')
     elif tipo ==  'año_entero_positivo':
         print('ERROR: El año debe ser un número entero positivo')
+    elif tipo ==  'rango_fecha':
+        print('ERROR: La fecha ingresada no se encuentra dentro del rango válido por el calendario gregoriano')
 
 
-print(dia_primero_enero((9999)))
+#print(fecha_es_tupla((201,2,2)))
