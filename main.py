@@ -159,16 +159,16 @@ def dia_siguiente(fecha):
     mes = fecha[1]
     anno = fecha[0]
     es_bisiesto = 1 if bisiesto(anno) else 0
-    if (fecha_es_valida):
+    if (fecha_es_valida(fecha)):
         if (mes == 2):
-            [anno, mes, dia + 1] if dia < dias_mes[1][es_bisiesto] else [anno, mes + 1, 1]
+            (anno, mes, dia + 1) if dia < dias_mes[1][es_bisiesto] else (anno, mes + 1, 1)
         elif (dia < dias_mes[mes - 1]):
-            return [anno, mes, dia + 1]
+            return (anno, mes, dia + 1)
         elif (dia == dias_mes[mes - 1]):
             if (mes == 12):
-                return [anno + 1, 1, 1]
+                return (anno + 1, 1, 1)
             else:
-                return [anno, mes + 1, 1]
+                return (anno, mes + 1, 1)
     return False
         
 
