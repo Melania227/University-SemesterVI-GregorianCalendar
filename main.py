@@ -168,7 +168,7 @@ def dias_desde_primero_enero(fecha):
         es_bisiesto = 1 if bisiesto(anno) else 0
         if mes==1:
             return 0
-        elif anno <= fecha_actual[0] and mes <= fecha_actual[1] and dia <= fecha_actual[2]:
+        else:
             res = 0
             for i in range(0,len(dias_mes)):
                 d=dias_mes[i]
@@ -180,9 +180,6 @@ def dias_desde_primero_enero(fecha):
                 else:
                     res+=d
             return res
-        else:
-            generar_error('fecha_posterior')
-            return 0
     else:
         generar_error('fecha_invalida')
         return 0
@@ -195,13 +192,21 @@ def dias_desde_primero_enero(fecha):
 #Salidas: Un numero entero
 #Descripción: Ingresado un número, el sistema determinará y retornará en formato codificado un número 
 #             entero conforme al día de la semana que corresponde al primero de enero del año ingresado. 
+#NOTA: Para esta solución se hizo uso de la fórmula de Gauss
 def dia_primero_enero(anno):
-    if (es_entero_positivo(anno)):
-        if (anno_en_rango(anno)):
-            codigo = ((anno - 1) % 7 + ((anno - 1) / 4 - (3 * ((anno - 1) / 100 + 1) / anno)) % 7 + 0 + 1 % 7) % 7;
-            return codigo
-        return generar_error('rango_anno')
-    return generar_error('año_entero_positivo')
+    if es_entero_positivo(anno):
+        if anno_en_rango(anno):
+            f_g= [0, 5, 3, 1]
+            c = (anno-1)//100
+            g = anno - 1 - (100 * c)
+            w = (1 +0 + f_g[c%4] + g + (g//4))%7
+            return w
+        else:
+            generar_error('rango_anno')
+            return 0
+    else:
+        generar_error('año_entero_positivo')
+        return 0
 
 
 
@@ -233,10 +238,8 @@ def generar_error(tipo):
         print('ERROR: El día no se encuentra dentro del rango válido por el calendario gregoriano')
     elif tipo == 'fecha_invalida':
         print('ERROR: La fecha ingresada es inválida')
-    elif tipo == 'fecha_posterior':
-        print('ERROR: La fecha ingresada es posterior a la fecha actual')
     elif tipo ==  'año_entero_positivo':
         print('ERROR: El año debe ser un número entero positivo')
 
 
-print(fecha_es_tupla((2021,1,31)))
+print(dia_primero_enero((9999)))
