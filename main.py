@@ -86,8 +86,10 @@ def bisiesto(num):
                     return (num % 400)
                 return True
             return False
-        return generar_error('rango_anno')
-    return generar_error('año_entero_positivo')
+        generar_error('rango_anno')
+        return False
+    generar_error('año_entero_positivo')
+    return False
 
 
 #Entradas: número entero positivo
@@ -125,12 +127,11 @@ def fecha_es_valida(fecha):
             generar_error('rango_anno')
             return False
     else:
-        generar_error('tupla_invalida')
         return False
 
 
 
-# ----------------------------------- dias_desde_primero_enero ------------------------------------------
+# ----------------------------------- dias_siguiente ------------------------------------------
 
 #Entradas: Una tupla que representa una fecha
 #Salidas: Una tupla que representa una fecha
@@ -181,7 +182,6 @@ def dias_desde_primero_enero(fecha):
                     res+=d
             return res
     else:
-        generar_error('fecha_invalida')
         return 0
 
 
