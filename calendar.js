@@ -39,7 +39,7 @@ function fecha_es_tupla(fecha) {
         }
     } else {
         console.log(generar_error('no_es_tupla'));
-        return generar_error('no_es_tupla');
+        return false;
     }
 }
 
@@ -77,18 +77,23 @@ function bisiesto(num) {
     if (es_entero_positivo(num)) {
         if (anno_en_rango(num)) {
             if (num % 4 == 0) {
-                if (num % 100) {
-                    return (num % 400);
+                if (num % 100 == 0) {
+                    if(num % 400== 0){
+                        return true;
+                    }
+                    return false;
                 }
                 return true;
             }
             return false;
         }
-        console.log(generar_error('año_rango'));
+        console.log(generar_error('rango_anno'));
         return false
     }
-    console.log(generar_error('año_entero_positivo'));
-    return false;
+    else{
+        console.log(generar_error('año_entero_positivo'));
+        return false;
+    }
 }
 
 //E: número entero positivo
@@ -113,8 +118,14 @@ function fecha_es_valida(fecha) {
             es_bisiesto = bisiesto(anno) ? 1 : 0;
             if (mes >= 0 && mes <= 11) {
                 dias_del_mes = mes == 1 ? dias_mes[mes][es_bisiesto] : dias_mes[mes];
-                if (dia >= 1 && dia <= dias_del_mes)
-                    return true;
+                if (dia >= 1 && dia <= dias_del_mes){
+                    if (fecha_en_rango(fecha))
+                        return True
+                    else{
+                        generar_error('rango_fecha');
+                        return false;
+                    }
+                }
                 else {
                     console.log(generar_error('rango_dia'));
                     return false;
@@ -132,7 +143,23 @@ function fecha_es_valida(fecha) {
     }
 }
 
-// ----------------------------------- dias_siguiente ------------------------------------------
+
+//E:fecha en formato de tupla
+//S: boolean
+//D: Función que valida si la fecha ingresada se encuentra dentro de los rangos del calendario gregoriano
+function fecha_en_rango(fecha){
+    let anno = fecha[0];
+    let mes = fecha[1];
+    let dia = fecha[2];
+    if (anno == fecha_min[0] && mes == fecha_min[1] && dia == fecha_min[2])
+        return false;
+    else if (anno == fecha_min[0] && mes <= fecha_min[1])
+        return false;
+    else if (anno >= fecha_min[0] && anno <= fecha_max[0])
+        return true;
+}
+
+// ----------------------------------- 3.dias_siguiente ------------------------------------------
 
 //E: Una tupla que representa una fecha
 //S: Una tupla que representa una fecha
@@ -160,7 +187,7 @@ function dia_siguiente(fecha) {
     return false;
 }
 
-// ----------------------------------- dias_desde_primero_enero ------------------------------------------
+// ----------------------------------- 4.dias_desde_primero_enero ------------------------------------------
 
 //E: fecha en formato de tupla
 //S: número entero positivo
@@ -195,16 +222,16 @@ function dias_desde_primero_enero(fecha) {
     }
 }
 
+// ----------------------------------- 5.dia_primero_enero ------------------------------------------
 
 
 //E: Un numero entero entre 1582 y 9999
 //S: Un numero
 //D: Ingresado un número, el sistema determinará y retornará en formato codificado un número entero conforme al día de la semana que corresponde al primero de enero del año ingresado. 
 function dia_primero_enero(anno) {
-    let c = (anno-1)/100;
-    c = c.toFixed(0);
+    let c = Math.trunc((anno-1)/100);
     let g = anno - 1 - (100 * c);
-    let n = (g/4).toFixed(0);
+    let n = Math.trunc((g/4));
     if (es_entero_positivo(anno)) {
         if (anno_en_rango(anno)) {
             return (1 + 0 + f_g[c%4] + g + (n))%7;
@@ -249,9 +276,21 @@ function generar_error(tipo) {
             return 'ERROR: La fecha ingresada es posterior a la fecha actual.';
         case 'año_entero_positivo':
             return 'ERROR: El año debe ser un número entero positivo.';
-
+        case 'rango_fecha':
+            return 'ERROR: La fecha ingresada no se encuentra dentro del rango válido por el calendario gregoriano';
     }
 
 }
-
-console.log(dia_primero_enero(2119));
+console.log(fecha_es_valida('hola'));
+console.log("------------------");
+console.log(fecha_es_valida([1580,4,20]));
+console.log("------------------");
+console.log(fecha_es_valida([2001,2,27]));
+console.log("------------------");
+console.log(fecha_es_valida([2001,2,29]));
+console.log("------------------");
+console.log(fecha_es_valida([2004,2,29]));
+console.log("------------------");
+console.log(fecha_es_valida([2021,13,27]));
+console.log("------------------");
+console.log(fecha_es_valida([2011,12,32]));
