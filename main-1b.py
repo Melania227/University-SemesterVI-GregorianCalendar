@@ -143,6 +143,8 @@ def fecha_en_rango(fecha):
     elif anno >= fecha_min[0] and anno <= fecha_max[0]:
         return True
 
+
+
 # ----------------------------------- dias_siguiente ------------------------------------------
 
 #Entradas: Una tupla que representa una fecha
@@ -179,6 +181,7 @@ def dias_desde_primero_enero(fecha):
         mes = fecha[1]-1
         dia = fecha[2]
         es_bisiesto = 1 if bisiesto(anno) else 0
+        #CAMBIO DEL CODIGO ORIGINAL************
         res = 0
         for i in range(0,len(dias_mes)):
             d=dias_mes[i]
@@ -258,6 +261,7 @@ def fecha_futura (fecha, dias):
             generar_error('numero_entero_positivo')
     else:
         generar_error('fecha_invalida')
+
 
 
 # ----------------------------------------- dias_entre -------------------------------------------------
@@ -372,12 +376,13 @@ def generar_error(tipo):
         print('ERROR: El día no se encuentra dentro del rango válido por el calendario gregoriano')
     elif tipo == 'fecha_invalida':
         print('ERROR: La fecha ingresada es inválida')
-    elif tipo ==  'año_entero_positivo':
+    elif tipo == 'año_entero_positivo':
         print('ERROR: El año debe ser un número entero positivo')
-    elif tipo ==  'rango_fecha':
+    elif tipo == 'rango_fecha':
         print('ERROR: La fecha ingresada no se encuentra dentro del rango válido por el calendario gregoriano')
     elif tipo == 'numero_entero_positivo':
         print('ERROR: La número ingresado debe ser entero y positivo')
+        
 
 # ----------------------------------- 6.imprimir_4x3 ------------------------------------------
 
