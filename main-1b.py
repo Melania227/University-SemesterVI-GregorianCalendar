@@ -4,6 +4,8 @@ fecha_min = [1582, 10, 15]
 dias_mes = [31, [28, 29], 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 fecha_actual = (2021,9,27)
 dia = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']
+dias_calendario = '  D  L  K  M  J  V  S |';
+meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
 # --------------------------------------- fecha_es_tupla ----------------------------------------------
 
@@ -79,20 +81,13 @@ def formato_dia_mes(dia_mes):
 #Descripción: Ingresado un número, revisa que esté en el rango y retorna true en caso de ser bisiesto, 
 #             en caso contrario retorna false
 def bisiesto(num):
-    if (es_entero_positivo(num)):
-        if (anno_en_rango(num)):
-            if (num % 4 == 0):
-                if (num % 100 ==0):
-                    if (num % 400):
-                        return True
-                    return False
+    if (num % 4 == 0):
+        if (num % 100 !=0):
+            if (num % 400):
                 return True
             return False
-        generar_error('rango_anno')
         return False
-    generar_error('año_entero_positivo')
     return False
-
 
 
 #Entradas: número entero positivo
@@ -152,7 +147,7 @@ def fecha_en_rango(fecha):
 
 #Entradas: Una tupla que representa una fecha
 #Salidas: Una tupla que representa una fecha
-#Descripcion: Ingresado una fecha, retorna la sigueinte fecha válida.
+#Descripcion: Ingresado una fecha, retorna la siguiente fecha válida.
 def dia_siguiente(fecha):
     dia = fecha[2]
     mes = fecha[1]
@@ -184,20 +179,17 @@ def dias_desde_primero_enero(fecha):
         mes = fecha[1]-1
         dia = fecha[2]
         es_bisiesto = 1 if bisiesto(anno) else 0
-        if mes==1:
-            return 0
-        else:
-            res = 0
-            for i in range(0,len(dias_mes)):
-                d=dias_mes[i]
-                if type(dias_mes[i]) != int:
-                    d = dias_mes[i][es_bisiesto]
-                if i==mes:
-                    res+=dia-1
-                    return res
-                else:
-                    res+=d
-            return res
+        res = 0
+        for i in range(0,len(dias_mes)):
+            d=dias_mes[i]
+            if type(dias_mes[i]) != int:
+                d = dias_mes[i][es_bisiesto]
+            if i==mes:
+                res+=dia-1
+                return res
+            else:
+                res+=d
+        return res
     else:
         return 0
 
@@ -225,6 +217,47 @@ def dia_primero_enero(anno):
         generar_error('año_entero_positivo')
         return 0
 
+
+
+# ---------------------------------------- fecha_futura -------------------------------------------------
+
+#Entradas: Una fecha válida y un número entero positivo (incluye al 0)
+#Salidas: Una fecha válida
+#Descripción: Ingresado un número entero positivo n y una fecha válida, el sistema deberá encontrar 
+#             una fecha válida existente n días después la fecha indicada. 
+
+def fecha_futura (fecha, dias):
+    if (fecha_es_valida(fecha)):
+        if (es_entero_positivo(dias)):
+            anno = fecha[0]
+            mes = fecha[1]
+            dia = fecha[2]
+            dias_temp = dias+dias_desde_primero_enero(fecha)
+            dia=1 
+            mes=1
+            print(dias_temp)
+            while(dias_temp>366):
+                es_bisiesto = 1 if bisiesto(anno) else 0
+                dias_temp -= 366 if es_bisiesto else 365
+                anno+=1
+            print(dias_temp)
+
+            es_bisiesto = 1 if bisiesto(anno) else 0
+            for i in range (0, 12):
+                diasMes = dias_mes[i][es_bisiesto] if i==1 else dias_mes[i]
+                if dias_temp > diasMes:
+                    dias_temp -= diasMes
+                    mes+=1
+                    continue
+                break
+            dia += dias_temp
+            print(dias_temp)
+
+            return (anno, mes, dia)
+        else:
+            generar_error('numero_entero_positivo')
+    else:
+        generar_error('fecha_invalida')
 
 
 # ----------------------------------------- dias_entre -------------------------------------------------
@@ -279,7 +312,8 @@ def dias_entre_mismo_anho (fecha_1, fecha_2):
             mesMenor = fecha_1[1]
             #Sumo dias sobrantes y restantes para luego sumar los meses completos entre medias
             dias += fecha_2[2]
-            dias += dias_mes[mesMenor-1]-fecha_1[2]
+            es_bisiesto = 1 if bisiesto(fecha_1[0]) else 0
+            dias += dias_mes[mesMenor-1][es_bisiesto]-fecha_1[2] if mesMenor-1==1 else dias_mes[mesMenor-1]-fecha_1[2]
             #Sumo los meses completos que falten
             for i in range ((mesMenor+1), mesMayor):
                 i=i-1
@@ -293,7 +327,8 @@ def dias_entre_mismo_anho (fecha_1, fecha_2):
             mesMenor = fecha_2[1]
             #Sumo dias sobrantes y restantes para luego sumar los meses completos entre medias
             dias += fecha_1[2]
-            dias += dias_mes[mesMenor-1]-fecha_2[2]
+            es_bisiesto = 1 if bisiesto(fecha_1[0]) else 0
+            dias += dias_mes[mesMenor-1][es_bisiesto]-fecha_2[2] if mesMenor-1==1 else dias_mes[mesMenor-1]-fecha_2[2]
             #Sumo los meses completos que falten
             for i in range ((mesMenor+1), mesMayor):
                 i=i-1
@@ -308,7 +343,6 @@ def dias_entre_mismo_anho (fecha_1, fecha_2):
         else:
             dias += fecha_1[2] - fecha_2[2]
     return dias
-
 
 # ------------------------------------- impresión de errores --------------------------------------------
 
@@ -342,7 +376,99 @@ def generar_error(tipo):
         print('ERROR: El año debe ser un número entero positivo')
     elif tipo ==  'rango_fecha':
         print('ERROR: La fecha ingresada no se encuentra dentro del rango válido por el calendario gregoriano')
+    elif tipo == 'numero_entero_positivo':
+        print('ERROR: La número ingresado debe ser entero y positivo')
+
+# ----------------------------------- 6.imprimir_4x3 ------------------------------------------
+
+#E: Un numero entero entre 1582 y 9999
+#S: Un booleano. Imprimer en consola si el booleano es positivo.
+#D: Ingresado un año se imprime en consola el calendario correspondiente en formato 4x3. 
+
+def imprimir_4x3(anno):
+    print('Calendario del año '+str(anno)+ ' D.C.')
+    print(' ')
+    if es_entero_positivo(anno) :
+        if anno_en_rango(anno) :
+            res = calendario(anno)
+            orden = []
+            for j in range (0,8):
+                linea = ''
+                c=0
+                orden.append([])
+                for i in range (0,12) :
+                    linea += res[i][j]
+                    if ((i+1)%3==0 ):
+                        orden[j].append(linea)
+                        linea = ''
+                        c+=1
+            for n in range (0,4) :
+                for i in range (0,8) :
+                    print(orden[i][n])
+                
+                print(' ')
+            
+            return True   
+        
+    return False
+    
 
 
-print(dias_entre((2004,4,30),(2001,1,27)))
-print(dias_entre((2001,1,27),(2004,4,30)))
+#E: Un numero entero entre 1582 y 9999
+#S: Retorna una matriz
+#D: Ingresado un año retorna en formato de matriz el calendario correspondiente. 
+def calendario(anno) :
+    calendario = []
+    bis = 1 if bisiesto(anno) else 0
+    dia_inicio = dia_primero_enero(anno)
+    for i in range(0, 12) :
+        res = imprimirMes(dia_inicio, i, bis)
+        calendario.append(res[0])
+        dia_inicio = res[1]+1
+    
+    return calendario
+
+
+#E: Día de inicio, mes, un booleano.
+#S: Retorna una tupla con el mes del año en formato de matriz y el ultimo día del mes.
+#D: Funcion que genera la matriz de un mes del año.
+def imprimirMes(inicio, mes, bis):
+    matriz = []
+    matriz.append(nombre_mes(mes))
+    matriz.append(dias_calendario)
+    cont = 1
+    max = dias_mes[1][bis] if mes == 1 else dias_mes[mes]
+    for i in range(2,8):
+        linea = ''  if i != 2 else ('   '*(inicio))
+        for dia in range(inicio,7):
+            if cont <= max:
+                if cont==max:
+                    final = dia
+                
+                linea+= '  '  if (cont < 10 ) else  ' ' 
+                linea+= str(cont)
+                cont+=1
+        if cont>max:
+            matriz.append(linea+ (' '*(22 -len(linea)))+'|')
+        else:
+            matriz.append(linea+' |')
+        inicio = 0
+    return [matriz, final]
+
+#E: Un numero.
+#S: Una lista de string.
+#D: Funcion que genera la primeras linea de un mes.
+def nombre_mes(mes):
+    m_l = len(meses[mes])
+    linea = (' '*(11 - m_l//2) )+ meses[mes]
+    linea = linea + (' '*(22 -len(linea)))+'|'
+    return linea
+
+
+print(dias_entre((2001,2,27),(2001,6,7)))
+print(dias_entre((2001,2,27),(2233,7,26)))
+print(dias_entre((2001,2,27),(2142,2,23)))
+print(dias_entre((2001,2,27),(2022,1,31)))
+print(dias_entre((2001,2,27),(2203,12,1)))
+print(dias_entre((2001,2,27),(2123,12,13)))
+print(dias_entre((2001,2,27),(2020,3,4)))
