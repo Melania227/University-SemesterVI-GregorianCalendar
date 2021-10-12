@@ -148,8 +148,7 @@ def fecha_en_rango(fecha):
     elif anno >= fecha_min[0] and anno <= fecha_max[0]:
         return True
 
-
-# ----------------------------------- dias_desde_primero_enero ------------------------------------------
+# ----------------------------------- dias_siguiente ------------------------------------------
 
 #Entradas: Una tupla que representa una fecha
 #Salidas: Una tupla que representa una fecha
@@ -200,7 +199,6 @@ def dias_desde_primero_enero(fecha):
                     res+=d
             return res
     else:
-        generar_error('fecha_invalida')
         return 0
 
 

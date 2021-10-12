@@ -1,7 +1,8 @@
 const fecha_max = [9999, 12, 31];
 const fecha_min = [1582, 10, 15];
 const dias_mes = [31, [28, 29], 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-const nombre_dia = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']
+const nombre_dia = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+const f_g= [0, 5, 3, 1];
 
 //E: -
 //S: boolean
@@ -12,7 +13,7 @@ function es_entero_positivo(num) {
     return false;
 }
 
-//--------------------------------------- fecha_es_tupla ----------------------------------------------
+//--------------------------------------- 0.fecha_es_tupla ----------------------------------------------
 
 //E: string (representa el tipo de error por imprimir)
 //S: void / Impresión del error
@@ -20,28 +21,27 @@ function es_entero_positivo(num) {
 //             números enteros positivos en el orden de año, mes, día
 function fecha_es_tupla(fecha) {
     if (typeof (fecha) == 'object' && (fecha instanceof Array)) {
-        if (fecha.length() == 3) {
+        if (fecha.length == 3) {
             if (es_entero_positivo(fecha[0]) && es_entero_positivo(fecha[1]) && es_entero_positivo(fecha[2])) {
                 if (orden_de_fecha(fecha)) {
                     return true;
                 } else {
-                    generar_error('fecha_desordenada');
+                    console.log(generar_error('fecha_desordenada'));
                     return false;
                 }
             } else {
-                generar_error('entero_positivo');
+                console.log(generar_error('entero_positivo'));
                 return false;
             }
         } else {
-            generar_error('tamano_tupla');
+            console.log(generar_error('tamano_tupla'));
             return false;
         }
     } else {
-        generar_error('no_es_tupla');
-        return generar_error('no_es_tupla');;
+        console.log(generar_error('no_es_tupla'));
+        return false;
     }
 }
-
 
 //E: tupla
 //S:  boolean
@@ -50,44 +50,25 @@ function orden_de_fecha(fecha) {
     let dia = fecha[2];
     let mes = fecha[1];
     let anno = fecha[0];
-    if (formato_anno(anno) && formato_dia_mes(mes) && formato_dia_mes(dia))
-        return true;
-    else
-        return false;
+    return (formato_anno(anno) && formato_dia_mes(mes) && formato_dia_mes(dia))
 }
 
 //E: entero
 //S: boolean
 //D: Función que valida que el año contenga 4 dígitos
 function formato_anno(anno) {
-    contador = 0;
-    while (anno > 0) {
-        anno = anno / 10;
-        contador += 1;
-    }
-    return contador == 4;
+    return anno.toString().length == 4 ? true : false;
 }
 
 //E: entero
 //S: boolean
 //D: Función que valida que el día o el mes estén compuestos por 1 o 2 dígitos
 function formato_dia_mes(dia_mes) {
-    contador = 0;
-    while (dia_mes > 0) {
-        dia_mes = dia_mes / 10;
-        contador += 1;
-    }
-    return contador == 2 || contador == 1;
+    return (dia_mes.toString().length == 2 || dia_mes.toString().length == 1) ? true : false;
 }
 
 
-
-
-
-
-// ------------------------------------------ bisiesto ---------------------------------------------------
-
-
+// ------------------------------------------ 1.bisiesto ---------------------------------------------------
 
 //E: Un numero entero entre 1582 y 9999
 //S: Un Booleano
@@ -96,16 +77,23 @@ function bisiesto(num) {
     if (es_entero_positivo(num)) {
         if (anno_en_rango(num)) {
             if (num % 4 == 0) {
-                if (num % 100) {
-                    return (num % 400);
+                if (num % 100 == 0) {
+                    if(num % 400== 0){
+                        return true;
+                    }
+                    return false;
                 }
                 return true;
             }
             return false;
         }
-        return generar_error('año_rango');
+        console.log(generar_error('rango_anno'));
+        return false
     }
-    return generar_error('año_entero_positivo');
+    else{
+        console.log(generar_error('año_entero_positivo'));
+        return false;
+    }
 }
 
 //E: número entero positivo
@@ -115,7 +103,8 @@ function anno_en_rango(num) {
     return fecha_min[0] <= num && num <= fecha_max[0];
 }
 
-// --------------------------------------- fecha_es_valida -----------------------------------------------
+
+// --------------------------------------- 2.fecha_es_valida -----------------------------------------------
 
 //E: fecha en formato de tupla
 //S: boolean
@@ -129,27 +118,48 @@ function fecha_es_valida(fecha) {
             es_bisiesto = bisiesto(anno) ? 1 : 0;
             if (mes >= 0 && mes <= 11) {
                 dias_del_mes = mes == 1 ? dias_mes[mes][es_bisiesto] : dias_mes[mes];
-                if (dia >= 1 && dia <= dias_del_mes)
-                    return true;
+                if (dia >= 1 && dia <= dias_del_mes){
+                    if (fecha_en_rango(fecha))
+                        return True
+                    else{
+                        generar_error('rango_fecha');
+                        return false;
+                    }
+                }
                 else {
-                    generar_error('rango_dia');
+                    console.log(generar_error('rango_dia'));
                     return false;
                 }
             } else {
-                generar_error('rango_mes');
+                console.log(generar_error('rango_mes'));
                 return false;
             }
         } else {
-            generar_error('rango_anno');
+            console.log(generar_error('rango_anno'));
             return false;
         }
     } else {
-        generar_error('tupla_invalida');
         return false;
     }
 }
 
-// ----------------------------------- dias_siguiente ------------------------------------------
+
+//E:fecha en formato de tupla
+//S: boolean
+//D: Función que valida si la fecha ingresada se encuentra dentro de los rangos del calendario gregoriano
+function fecha_en_rango(fecha){
+    let anno = fecha[0];
+    let mes = fecha[1];
+    let dia = fecha[2];
+    if (anno == fecha_min[0] && mes == fecha_min[1] && dia == fecha_min[2])
+        return false;
+    else if (anno == fecha_min[0] && mes <= fecha_min[1])
+        return false;
+    else if (anno >= fecha_min[0] && anno <= fecha_max[0])
+        return true;
+}
+
+// ----------------------------------- 3.dias_siguiente ------------------------------------------
 
 //E: Una tupla que representa una fecha
 //S: Una tupla que representa una fecha
@@ -159,7 +169,7 @@ function dia_siguiente(fecha) {
     let mes = fecha[1];
     let anno = fecha[0];
     let es_bisiesto = bisiesto(anno) ? 1 : 0;
-    if (fecha_es_valida) {
+    if (fecha_es_valida(fecha)) {
         if (mes == 2) { //Caso Febrero
             return dia < dias_mes[1][es_bisiesto] ? [anno, mes, dia + 1] : [anno, mes + 1, 1];
         } else {
@@ -177,27 +187,110 @@ function dia_siguiente(fecha) {
     return false;
 }
 
-function generar_error(tipo) {
-    switch (tipo) {
-        case 'entero_positivo':
-            return 'ERROR: La tupla debe estar compuesta por números enteros positivos.';
-        case 'año_entero_positivo':
-            return 'ERROR: El año debe estar compuesta por un número entero positivo.';
-        case 'año_rango':
-            return 'ERROR: El año ingresado está fuera del rango válido.';
+// ----------------------------------- 4.dias_desde_primero_enero ------------------------------------------
+
+//E: fecha en formato de tupla
+//S: número entero positivo
+//D: Función que dada una fecha válida deberá determinar el número entero de días transcurridos
+//             desde el primero de enero del año ingresado hasta el día de la fecha dada.
+function dias_desde_primero_enero(fecha) {
+    if (fecha_es_valida(fecha)) {
+        let anno = fecha[0];
+        let mes = fecha[1] - 1;
+        let dia = fecha[2];
+        es_bisiesto = bisiesto(anno) ? 1 : 0;
+        if (mes == 1) //PREGUNTAR
+            return 0;
+        else {
+            res = 0;
+            for (let i = 0; i < dias_mes.length; i++) {
+                d = dias_mes[i]
+                if (typeof (dias_mes[i]) != 'number') {
+                    d = dias_mes[i][es_bisiesto];
+                }
+                if (i == mes) {
+                    res += dia - 1;
+                    return res;
+                } else {
+                    res += d;
+                }
+            }
+            return res;
+        }
+    } else {
+        return 0;
     }
 }
+
+// ----------------------------------- 5.dia_primero_enero ------------------------------------------
+
 
 //E: Un numero entero entre 1582 y 9999
 //S: Un numero
 //D: Ingresado un número, el sistema determinará y retornará en formato codificado un número entero conforme al día de la semana que corresponde al primero de enero del año ingresado. 
 function dia_primero_enero(anno) {
+    let c = Math.trunc((anno-1)/100);
+    let g = anno - 1 - (100 * c);
+    let n = Math.trunc((g/4));
     if (es_entero_positivo(anno)) {
         if (anno_en_rango(anno)) {
-            let codigo = ((anno - 1) % 7 + ((anno - 1) / 4 - (3 * ((anno - 1) / 100 + 1) / anno)) % 7 + 0 + 1 % 7) % 7;
-            return codigo;
+            return (1 + 0 + f_g[c%4] + g + (n))%7;
         }
-        return generar_error('año_rango');
+        console.log(generar_error('rango_anno'));
+        return false;
     }
-    return generar_error('año_entero_positivo');
+    console.log(generar_error('año_entero_positivo'));
+    return false;
 }
+
+// ------------------------------------- impresión de errores --------------------------------------------
+
+//E: string (representa el tipo de error por imprimir)
+//S: void / Impresión del error
+//D: Función específica para generar errores (consideraciones de diseño tomadas).
+function generar_error(tipo) {
+    switch (tipo) {
+        case 'no_es_tupla':
+            return 'ERROR: La fecha ingresada debe estar en formato de tupla.';
+        case 'tamano_tupla':
+            return 'ERROR: La tupla debe estar compuesta por 3 números enteros positivos.';
+        case 'entero_positivo':
+            return 'ERROR: La tupla debe estar compuesta por números enteros positivos.';
+        case 'fecha_desordenada':
+            return 'ERROR: La fecha debe venir en el orden año, mes, día.';
+        case 'tupla_invalida':
+            return 'ERROR: El formato de la tupla ingresada es inválido.';
+        case 'formato_anno':
+            return 'ERROR: El año debe estar compuesto por 4 dígitos.';
+        case 'formato_mes_dia':
+            return 'ERROR: El mes y el día deben estar compuestos por 1 o 2 dígitos.';
+        case 'rango_anno':
+            return 'ERROR: El año no se encuentra dentro del rango válido por el calendario gregoriano.';
+        case 'rango_mes':
+            return 'ERROR: El mes no se encuentra dentro del rango válido por el calendario gregoriano.';
+        case 'rango_dia':
+            return 'ERROR: El día no se encuentra dentro del rango válido por el calendario gregoriano.';
+        case 'fecha_invalida':
+            return 'ERROR: La fecha ingresada es inválida.';
+        case 'fecha_posterior':
+            return 'ERROR: La fecha ingresada es posterior a la fecha actual.';
+        case 'año_entero_positivo':
+            return 'ERROR: El año debe ser un número entero positivo.';
+        case 'rango_fecha':
+            return 'ERROR: La fecha ingresada no se encuentra dentro del rango válido por el calendario gregoriano';
+    }
+
+}
+console.log(fecha_es_valida('hola'));
+console.log("------------------");
+console.log(fecha_es_valida([1580,4,20]));
+console.log("------------------");
+console.log(fecha_es_valida([2001,2,27]));
+console.log("------------------");
+console.log(fecha_es_valida([2001,2,29]));
+console.log("------------------");
+console.log(fecha_es_valida([2004,2,29]));
+console.log("------------------");
+console.log(fecha_es_valida([2021,13,27]));
+console.log("------------------");
+console.log(fecha_es_valida([2011,12,32]));
