@@ -79,18 +79,12 @@ def formato_dia_mes(dia_mes):
 #Descripción: Ingresado un número, revisa que esté en el rango y retorna true en caso de ser bisiesto, 
 #             en caso contrario retorna false
 def bisiesto(num):
-    if (es_entero_positivo(num)):
-        if (anno_en_rango(num)):
-            if (num % 4 == 0):
-                if (num % 100 ==0):
-                    if (num % 400):
-                        return True
-                    return False
+    if (num % 4 == 0):
+        if (num % 100 !=0):
+            if (num % 400):
                 return True
             return False
-        generar_error('rango_anno')
         return False
-    generar_error('año_entero_positivo')
     return False
 
 
@@ -148,6 +142,8 @@ def fecha_en_rango(fecha):
     elif anno >= fecha_min[0] and anno <= fecha_max[0]:
         return True
 
+
+
 # ----------------------------------- dias_siguiente ------------------------------------------
 
 #Entradas: Una tupla que representa una fecha
@@ -184,20 +180,18 @@ def dias_desde_primero_enero(fecha):
         mes = fecha[1]-1
         dia = fecha[2]
         es_bisiesto = 1 if bisiesto(anno) else 0
-        if mes==1:
-            return 0
-        else:
-            res = 0
-            for i in range(0,len(dias_mes)):
-                d=dias_mes[i]
-                if type(dias_mes[i]) != int:
-                    d = dias_mes[i][es_bisiesto]
-                if i==mes:
-                    res+=dia-1
-                    return res
-                else:
-                    res+=d
-            return res
+        #CAMBIO DEL CODIGO ORIGINAL************
+        res = 0
+        for i in range(0,len(dias_mes)):
+            d=dias_mes[i]
+            if type(dias_mes[i]) != int:
+                d = dias_mes[i][es_bisiesto]
+            if i==mes:
+                res+=dia-1
+                return res
+            else:
+                res+=d
+        return res
     else:
         return 0
 
@@ -224,6 +218,48 @@ def dia_primero_enero(anno):
     else:
         generar_error('año_entero_positivo')
         return 0
+
+
+
+# ---------------------------------------- fecha_futura -------------------------------------------------
+
+#Entradas: Una fecha válida y un número entero positivo (incluye al 0)
+#Salidas: Una fecha válida
+#Descripción: Ingresado un número entero positivo n y una fecha válida, el sistema deberá encontrar 
+#             una fecha válida existente n días después la fecha indicada. 
+
+def fecha_futura (fecha, dias):
+    if (fecha_es_valida(fecha)):
+        if (es_entero_positivo(dias)):
+            anno = fecha[0]
+            mes = fecha[1]
+            dia = fecha[2]
+            dias_temp = dias+dias_desde_primero_enero(fecha)
+            dia=1 
+            mes=1
+            print(dias_temp)
+            while(dias_temp>366):
+                es_bisiesto = 1 if bisiesto(anno) else 0
+                dias_temp -= 366 if es_bisiesto else 365
+                anno+=1
+            print(dias_temp)
+
+            es_bisiesto = 1 if bisiesto(anno) else 0
+            for i in range (0, 12):
+                diasMes = dias_mes[i][es_bisiesto] if i==1 else dias_mes[i]
+                if dias_temp > diasMes:
+                    dias_temp -= diasMes
+                    mes+=1
+                    continue
+                break
+            dia += dias_temp
+            print(dias_temp)
+
+            return (anno, mes, dia)
+        else:
+            generar_error('numero_entero_positivo')
+    else:
+        generar_error('fecha_invalida')
 
 
 
@@ -279,7 +315,8 @@ def dias_entre_mismo_anho (fecha_1, fecha_2):
             mesMenor = fecha_1[1]
             #Sumo dias sobrantes y restantes para luego sumar los meses completos entre medias
             dias += fecha_2[2]
-            dias += dias_mes[mesMenor-1]-fecha_1[2]
+            es_bisiesto = 1 if bisiesto(fecha_1[0]) else 0
+            dias += dias_mes[mesMenor-1][es_bisiesto]-fecha_1[2] if mesMenor-1==1 else dias_mes[mesMenor-1]-fecha_1[2]
             #Sumo los meses completos que falten
             for i in range ((mesMenor+1), mesMayor):
                 i=i-1
@@ -293,7 +330,8 @@ def dias_entre_mismo_anho (fecha_1, fecha_2):
             mesMenor = fecha_2[1]
             #Sumo dias sobrantes y restantes para luego sumar los meses completos entre medias
             dias += fecha_1[2]
-            dias += dias_mes[mesMenor-1]-fecha_2[2]
+            es_bisiesto = 1 if bisiesto(fecha_1[0]) else 0
+            dias += dias_mes[mesMenor-1][es_bisiesto]-fecha_2[2] if mesMenor-1==1 else dias_mes[mesMenor-1]-fecha_2[2]
             #Sumo los meses completos que falten
             for i in range ((mesMenor+1), mesMayor):
                 i=i-1
@@ -338,11 +376,25 @@ def generar_error(tipo):
         print('ERROR: El día no se encuentra dentro del rango válido por el calendario gregoriano')
     elif tipo == 'fecha_invalida':
         print('ERROR: La fecha ingresada es inválida')
-    elif tipo ==  'año_entero_positivo':
+    elif tipo == 'año_entero_positivo':
         print('ERROR: El año debe ser un número entero positivo')
-    elif tipo ==  'rango_fecha':
+    elif tipo == 'rango_fecha':
         print('ERROR: La fecha ingresada no se encuentra dentro del rango válido por el calendario gregoriano')
+    elif tipo == 'numero_entero_positivo':
+        print('ERROR: La número ingresado debe ser entero y positivo')
+        
 
-
-print(dias_entre((2004,4,30),(2001,1,27)))
-print(dias_entre((2001,1,27),(2004,4,30)))
+print(fecha_futura((2001,12,15), 1))
+print("----------------------------------------")
+print(fecha_futura((2001,12,15), 7305))
+print("----------------------------------------")
+print(fecha_futura((2001,12,15), 8677))
+print("----------------------------------------")
+print(fecha_futura((2001,12,15), 56788))
+#print(dias_entre((2001,2,27), (2024,12,1)))
+#print(bisiesto(2024))
+print("----------------------------------------")
+print(fecha_futura((2001,12,15), 8765))
+print("----------------------------------------")
+print(fecha_futura((2001,12,15), 98765))
+#print(dias_entre((2001,1,27),(2004,4,30)))
