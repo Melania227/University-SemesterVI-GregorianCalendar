@@ -4,8 +4,10 @@ fecha_min = [1582, 10, 15]
 dias_mes = [31, [28, 29], 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 fecha_actual = (2021,9,27)
 dia = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']
-dias_calendario = '  D  L  K  M  J  V  S |';
+dias_calendario = '  D  L  K  M  J  V  S |'
 meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre']
+
+
 
 # --------------------------------------- fecha_es_tupla ----------------------------------------------
 
@@ -181,7 +183,6 @@ def dias_desde_primero_enero(fecha):
         mes = fecha[1]-1
         dia = fecha[2]
         es_bisiesto = 1 if bisiesto(anno) else 0
-        #CAMBIO DEL CODIGO ORIGINAL************
         res = 0
         for i in range(0,len(dias_mes)):
             d=dias_mes[i]
@@ -219,6 +220,111 @@ def dia_primero_enero(anno):
     else:
         generar_error('año_entero_positivo')
         return 0
+
+
+
+# ----------------------------------- 6.imprimir_4x3 ------------------------------------------
+
+#E: Un numero entero entre 1582 y 9999
+#S: Un booleano. Imprimer en consola si el booleano es positivo.
+#D: Ingresado un año se imprime en consola el calendario correspondiente en formato 4x3. 
+
+def imprimir_4x3(anno):
+    print('Calendario del año '+str(anno)+ ' D.C.')
+    print(' ')
+    if es_entero_positivo(anno) :
+        if anno_en_rango(anno) :
+            res = calendario(anno)
+            orden = []
+            for j in range (0,8):
+                linea = ''
+                c=0
+                orden.append([])
+                for i in range (0,12) :
+                    linea += res[i][j]
+                    if ((i+1)%3==0 ):
+                        orden[j].append(linea)
+                        linea = ''
+                        c+=1
+            for n in range (0,4) :
+                for i in range (0,8) :
+                    print(orden[i][n])
+                
+                print(' ')
+            
+            return True   
+        
+    return False
+    
+
+#E: Un numero entero entre 1582 y 9999
+#S: Retorna una matriz
+#D: Ingresado un año retorna en formato de matriz el calendario correspondiente. 
+def calendario(anno) :
+    calendario = []
+    bis = 1 if bisiesto(anno) else 0
+    dia_inicio = dia_primero_enero(anno)
+    for i in range(0, 12) :
+        res = imprimirMes(dia_inicio, i, bis)
+        calendario.append(res[0])
+        dia_inicio = res[1]+1
+    
+    return calendario
+
+
+#E: Día de inicio, mes, un booleano.
+#S: Retorna una tupla con el mes del año en formato de matriz y el ultimo día del mes.
+#D: Funcion que genera la matriz de un mes del año.
+def imprimirMes(inicio, mes, bis):
+    matriz = []
+    matriz.append(nombre_mes(mes))
+    matriz.append(dias_calendario)
+    cont = 1
+    max = dias_mes[1][bis] if mes == 1 else dias_mes[mes]
+    for i in range(2,8):
+        linea = ''  if i != 2 else ('   '*(inicio))
+        for dia in range(inicio,7):
+            if cont <= max:
+                if cont==max:
+                    final = dia
+                
+                linea+= '  '  if (cont < 10 ) else  ' ' 
+                linea+= str(cont)
+                cont+=1
+        if cont>max:
+            matriz.append(linea+ (' '*(22 -len(linea)))+'|')
+        else:
+            matriz.append(linea+' |')
+        inicio = 0
+    return [matriz, final]
+
+
+#E: Un numero.
+#S: Una lista de string.
+#D: Funcion que genera la primeras linea de un mes.
+def nombre_mes(mes):
+    m_l = len(meses[mes])
+    linea = (' '*(11 - m_l//2) )+ meses[mes]
+    linea = linea + (' '*(22 -len(linea)))+'|'
+    return linea
+
+
+
+# ------------------------------------------ dia_semana -------------------------------------------------
+
+def dia_semana(fecha):
+    anno = fecha[0]
+    mes = fecha[1]
+    dia = fecha[2]
+    if (mes < 3):
+        mes += 12
+        anno -= 1
+    res = (dia + ((13 * (mes + 1)) // 5) + anno + (anno // 4) - (anno // 100) + (anno // 400)) % 7
+    if (res == 0):
+        res == 6
+    else:
+        res -= 1
+    return res
 
 
 
@@ -348,6 +454,8 @@ def dias_entre_mismo_anho (fecha_1, fecha_2):
             dias += fecha_1[2] - fecha_2[2]
     return dias
 
+
+
 # ------------------------------------- impresión de errores --------------------------------------------
 
 #Entradas: string (representa el tipo de error por imprimir)
@@ -384,91 +492,6 @@ def generar_error(tipo):
         print('ERROR: La número ingresado debe ser entero y positivo')
         
 
-# ----------------------------------- 6.imprimir_4x3 ------------------------------------------
-
-#E: Un numero entero entre 1582 y 9999
-#S: Un booleano. Imprimer en consola si el booleano es positivo.
-#D: Ingresado un año se imprime en consola el calendario correspondiente en formato 4x3. 
-
-def imprimir_4x3(anno):
-    print('Calendario del año '+str(anno)+ ' D.C.')
-    print(' ')
-    if es_entero_positivo(anno) :
-        if anno_en_rango(anno) :
-            res = calendario(anno)
-            orden = []
-            for j in range (0,8):
-                linea = ''
-                c=0
-                orden.append([])
-                for i in range (0,12) :
-                    linea += res[i][j]
-                    if ((i+1)%3==0 ):
-                        orden[j].append(linea)
-                        linea = ''
-                        c+=1
-            for n in range (0,4) :
-                for i in range (0,8) :
-                    print(orden[i][n])
-                
-                print(' ')
-            
-            return True   
-        
-    return False
-    
-
-
-#E: Un numero entero entre 1582 y 9999
-#S: Retorna una matriz
-#D: Ingresado un año retorna en formato de matriz el calendario correspondiente. 
-def calendario(anno) :
-    calendario = []
-    bis = 1 if bisiesto(anno) else 0
-    dia_inicio = dia_primero_enero(anno)
-    for i in range(0, 12) :
-        res = imprimirMes(dia_inicio, i, bis)
-        calendario.append(res[0])
-        dia_inicio = res[1]+1
-    
-    return calendario
-
-
-#E: Día de inicio, mes, un booleano.
-#S: Retorna una tupla con el mes del año en formato de matriz y el ultimo día del mes.
-#D: Funcion que genera la matriz de un mes del año.
-def imprimirMes(inicio, mes, bis):
-    matriz = []
-    matriz.append(nombre_mes(mes))
-    matriz.append(dias_calendario)
-    cont = 1
-    max = dias_mes[1][bis] if mes == 1 else dias_mes[mes]
-    for i in range(2,8):
-        linea = ''  if i != 2 else ('   '*(inicio))
-        for dia in range(inicio,7):
-            if cont <= max:
-                if cont==max:
-                    final = dia
-                
-                linea+= '  '  if (cont < 10 ) else  ' ' 
-                linea+= str(cont)
-                cont+=1
-        if cont>max:
-            matriz.append(linea+ (' '*(22 -len(linea)))+'|')
-        else:
-            matriz.append(linea+' |')
-        inicio = 0
-    return [matriz, final]
-
-#E: Un numero.
-#S: Una lista de string.
-#D: Funcion que genera la primeras linea de un mes.
-def nombre_mes(mes):
-    m_l = len(meses[mes])
-    linea = (' '*(11 - m_l//2) )+ meses[mes]
-    linea = linea + (' '*(22 -len(linea)))+'|'
-    return linea
-
 
 print(dias_entre((2001,2,27),(2001,6,7)))
 print(dias_entre((2001,2,27),(2233,7,26)))
@@ -477,3 +500,8 @@ print(dias_entre((2001,2,27),(2022,1,31)))
 print(dias_entre((2001,2,27),(2203,12,1)))
 print(dias_entre((2001,2,27),(2123,12,13)))
 print(dias_entre((2001,2,27),(2020,3,4)))
+
+imprimir_4x3(2021)
+imprimir_4x3(2001)
+
+print(dia_semana((2002, 12, 25)))
